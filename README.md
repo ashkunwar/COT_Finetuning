@@ -14,6 +14,12 @@ This repository demonstrates fine-tuning the Qwen 3B model to perform mathematic
 - **Hugging Face Transformers & TRL**: Leveraged for model manipulation, training, and evaluation.
 - **PEFT (LoRA)**: Enables efficient fine-tuning by adapting only select model parameters.
 
+## Installation
+
+```bash
+pip install -q unsloth
+```
+
 ## Dataset Preparation
 Dataset used:
 - [Ashkchamp/Openthoughts_math_filtered_30K](https://huggingface.co/datasets/Ashkchamp/Openthoughts_math_filtered_30K)
@@ -29,11 +35,35 @@ Fine-tuning configurations:
 - Precision: Automatic FP16/BF16 based on hardware support
 - LoRA Rank: 32
 
+Execute training:
+
+```python
+python train.py  # if encapsulated in a script, otherwise run cells sequentially in the provided notebook
+```
+
 ## Usage
 Post-training, the model is equipped to handle mathematical queries employing Chain-of-Thought reasoning clearly and systematically:
+
+```python
+from unsloth import FastLanguageModel
+
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name="unsloth/Qwen2.5-3B",
+    max_seq_length=8192,
+    dtype=None,
+    load_in_4bit=True
+)
+
+prompt = "Your structured math problem here."
+tokenized_input = tokenizer(prompt, return_tensors="pt")
+output = model.generate(**tokenized_input)
+
+print(tokenizer.decode(output[0], skip_special_tokens=True))
+```
 
 ## Contribution
 Feel free to contribute improvements, report issues, or suggest new features via pull requests or issue submissions.
 
 ## License
 Distributed under the MIT License. See the `LICENSE` file for more information.
+
